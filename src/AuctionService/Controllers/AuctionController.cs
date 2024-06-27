@@ -80,11 +80,33 @@ public class AuctionController : ControllerBase
         auction.Item.Color = updateAuctionDto.Color ?? auction.Item.Color;
         auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
 
-        var results = _context.SaveChanges() > 0;
+        var results = await _context.SaveChangesAsync() > 0;
 
         if (results)
             return Ok();
 
         return BadRequest("Problem saving");
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var auction = await _context.Auctions
+            .FindAsync(id);
+
+        if (auction == null)
+            return NotFound();
+        
+        //Todo: user validation
+
+        _context.Auctions.Remove(auction);
+
+        var results = await _context.SaveChangesAsync() > 0;
+
+        if (results)
+            return Ok();
+
+        return BadRequest("Problem saving");
+
     }
 }
