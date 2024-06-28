@@ -1,3 +1,5 @@
 src/AuctionService/bin/
 src/AuctionService/obj/
 src/AuctionService/Data/Migrations
+src/SearchService/bin/
+src/SearchService/obj/
