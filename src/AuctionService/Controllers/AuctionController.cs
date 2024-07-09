@@ -99,6 +99,10 @@ public class AuctionController : ControllerBase
         auction.Item.Color = updateAuctionDto.Color ?? auction.Item.Color;
         auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
 
+        var AuctionDto = _mapper.Map<AuctionDto>(auction);
+
+        await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(AuctionDto));
+
         var results = await _context.SaveChangesAsync() > 0;
 
         if (results)
@@ -117,6 +121,13 @@ public class AuctionController : ControllerBase
             return NotFound();
         
         //Todo: user validation
+
+        var AuctionDeleted = new AuctionDeleted
+        {
+            Id = id.ToString()
+        };
+
+        await _publishEndpoint.Publish(AuctionDeleted);
 
         _context.Auctions.Remove(auction);
 

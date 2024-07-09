@@ -13,6 +13,7 @@ builder.Services.AddHttpClient<AuctionServiceHttpClient>()
 builder.Services.AddMassTransit( x => 
 {
     x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+    x.AddConsumersFromNamespaceContaining<AuctionUpdatedConsumer>();
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));//prefix for the consumers of this project
     
     x.UsingRabbitMq((context, cfg) => 
@@ -47,4 +48,4 @@ static IAsyncPolicy<HttpResponseMessage> GetPolicy()
     => HttpPolicyExtensions
         .HandleTransientHttpError()
         .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-        .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(3));
+        .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(10));
