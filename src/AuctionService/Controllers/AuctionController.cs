@@ -99,9 +99,7 @@ public class AuctionController : ControllerBase
         auction.Item.Color = updateAuctionDto.Color ?? auction.Item.Color;
         auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
 
-        var AuctionDto = _mapper.Map<AuctionDto>(auction);
-
-        await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(AuctionDto));
+        await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
 
         var results = await _context.SaveChangesAsync() > 0;
 

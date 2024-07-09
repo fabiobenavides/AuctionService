@@ -19,6 +19,21 @@ public class AuctionUpdatedConsumer : IConsumer<AuctionUpdated>
 
         var item = _mapper.Map<Item>(context.Message);
 
-        await item.SaveAsync();
+        var result = await DB.Update<Item>()
+            .Match(a => a.ID == context.Message.Id)
+            .ModifyOnly(x => new 
+            {
+                x.Color,
+                x.Make,
+                x.Model,
+                x.Year,
+                x.Mileage
+            }, item)
+            .ExecuteAsync();
+        
+        if (!result.IsAcknowledged)
+        {
+            throw new MessageException(typeof(AuctionUpdated), "Problem updating mongodb");
+        }
     }
 }
