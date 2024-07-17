@@ -1,0 +1,5 @@
+docker compose up -d
+
+//Auction
+dotnet watch --urls=http://localhost:7001/
+
