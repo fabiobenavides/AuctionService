@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./nav/Navbar";
-
+import { ThemeModeScript } from "flowbite-react";
 
 export const metadata: Metadata = {
   title: "Fabio Carsties app",
@@ -15,9 +15,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <ThemeModeScript />
+      </head>
       <body>
         <Navbar />
-        {children}
+        <main className="container mx-auto px-5 pt-10">
+          {children}
+        </main>
       </body>
     </html>
   );
