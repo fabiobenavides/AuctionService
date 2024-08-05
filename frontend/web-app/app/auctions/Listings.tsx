@@ -26,23 +26,22 @@ export default function Listings() {
 
   useEffect(() => {
     getData(url).then(data => {
-      setAutions(data.results);
-      setPageCount(data.pageCount);
+      setData(data);
     })
-  }, [pageNumber, pageSize]);
+  }, [url]);
 
-  if (auctions.length === 0) return <h3>Loading...</h3>
+  if (!data) return <h3>Loading...</h3>
 
   return (
     <>
-      <Filters pageSize={pageSize} setPageSize={setPageSize} />
+      <Filters />
       <div className='grid grid-cols-4 gap-6'>
-        {auctions.map((auction) => (
+        {data.results.map((auction) => (
           <AuctionCard auction={auction} key={auction.id} />
         ))}
       </div>
       <div className='flex justify-center mt-4'>
-        <AppPagination currentPage={pageNumber} pageCount={pageCount} pageChanged={setPageNumber} />
+        <AppPagination currentPage={params.pageNumber} pageCount={data.pageCount} pageChanged={setPageNumber} />
       </div>
     </>
     
