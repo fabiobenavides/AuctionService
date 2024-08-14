@@ -1,21 +1,28 @@
+'use client'
+
 import { useParamsStore } from '@/hooks/useParamsStore'
 import React from 'react'
 import Heading from './Heading'
 import { Button } from 'flowbite-react'
-import Filters from '../auctions/Filters'
+import { signIn } from 'next-auth/react'
 
 type Props = {
     title?: string
     subtitle?: string
     showReset?: boolean
+    showLogin?: boolean
+    callbackUrl?: string
 }
 
 export default function EmptyFilter({
     title = 'No matches',
     subtitle = 'Try again',
-    showReset}: Props) {
+    showReset,
+    showLogin,
+    callbackUrl
+}: Props) {
 
-        const reset = useParamsStore(state => state.reset)
+    const reset = useParamsStore(state => state.reset)
 
   return (
     <>
@@ -24,6 +31,9 @@ export default function EmptyFilter({
             <div className='mt-4'>
                 {showReset && (
                     <Button outline onClick={reset}>Remove Filters</Button>
+                )}
+                {showLogin && (
+                    <Button outline onClick={() => signIn('id-server', {callbackUrl})}>Login</Button>
                 )}
             </div>
         </div>
