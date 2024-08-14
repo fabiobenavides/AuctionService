@@ -1,5 +1,7 @@
+docker build -f .\src\AuctionService\Dockerfile -t auction-svc . 
+
 docker compose up -d
 
-//Auction
-dotnet watch --urls=http://localhost:7001/
-
+Front-end:
+cd frontend\web-app
+npm run dev
