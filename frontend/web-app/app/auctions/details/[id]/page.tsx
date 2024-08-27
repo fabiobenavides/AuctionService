@@ -6,6 +6,7 @@ import CarImage from '../../CarImage';
 import DetailedSpecs from './DetailedSpects';
 import { getCurrentUser } from '@/app/actions/authActions';
 import EditButton from './EditButton';
+import DeleteButton from './DeleteButton';
 
 export default async function Details({params} : {params: {id: string}}) {
 
@@ -18,7 +19,10 @@ export default async function Details({params} : {params: {id: string}}) {
         <div className='flex items-center gap-3'>
           <Heading title={`${details.make} ${details.model}`} />
           {user?.username === details.seller && (
-            <EditButton id={details.id} />
+            <>
+                <EditButton id={details.id} />
+                <DeleteButton id={details.id} />
+            </>
           )}
         </div>
         

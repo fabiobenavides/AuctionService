@@ -70,24 +70,28 @@ export default function AutionForm({auction}: Props) {
             <Input label='Mileage' name='mileage' control={control} type='number' rules={{required: 'Mileage is required'}} />
          </div>
 
-        {pathname === '/auctions/create'} &&
+        {pathname === '/auctions/create' &&
         <>
             <Input label='Image URL' name='imageUrl' control={control} rules={{required: 'Image Url is required'}} />
 
             <div className='grid grid-cols-2 gap-3'>
                 <Input label='Reserve Price' name='reservePrice' control={control} type='number' rules={{required: 'Reserve Price is required'}} />
-                <DateInput label='Auction end date/time' name='auctionEnd' control={control} dateFormat='dd MMMM yyyy h:mm a' showTimeSelect rules={{required: 'Auction end date/time is required'}} />
+                <DateInput label='Auction end date/time' 
+                    name='auctionEnd' 
+                    control={control} 
+                    dateFormat='dd MMMM yyyy h:mm a' 
+                    showTimeSelect rules={{required: 'Auction end date/time is required'}} />
             </div>
+        </>}
 
-            <div className='flex justify-between'>
-                <Button outline color='gray'>Cancel</Button>
-                <Button isProcessing={isSubmitting}
-                    disabled={!isValid}
-                    type='submit'
-                    outline
-                    color='success'>Submit</Button>
-            </div>
-        </>
+        <div className='flex justify-between'>
+            <Button outline color='gray'>Cancel</Button>
+            <Button isProcessing={isSubmitting}
+                disabled={!isValid}
+                type='submit'
+                outline
+                color='success'>Submit</Button>
+        </div>
         
     </form>
   )
