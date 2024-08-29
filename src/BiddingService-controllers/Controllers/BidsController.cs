@@ -25,6 +25,39 @@ namespace BiddingService_controllers.Controllers
                 return BadRequest("You cannot bid on your own auction");
             }
             var bid = new Bid
+            {
+                Amount = amount,
+                AuctionId = auctionId,
+                Bidder = User.Identity.Name
+            };
+
+            if (auction.AuctionEnd < DateTime.UtcNow)
+            {
+                bid.BidStatus = BidStatus.Finished;
+            }
+            else
+            {
+                var highBid = await DB.Find<Bid>()
+                    .Match(a => a.AuctionId == auctionId)
+                    .Sort(b => b.Descending(x => x.Amount))
+                    .ExecuteFirstAsync();
+
+                if (highBid != null && highBid.Amount < amount || highBid == null)
+                {
+                    bid.BidStatus = amount > auction.ReservedPrice
+                        ? BidStatus.Accepted
+                        : BidStatus.AcceptedBelowReserve;
+                }
+
+                if (highBid != null && amount <= highBid.Amount)
+                {
+                    bid.BidStatus = BidStatus.TooLow;
+                }
+            }
+
+            await DB.SaveAsync(bid);
+
+            return Ok(bid);
         }
     }
 }
