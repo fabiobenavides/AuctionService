@@ -1,5 +1,3 @@
-using System;
-using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using MongoDB.Entities;
 
 namespace BiddingService_controllers.Models;

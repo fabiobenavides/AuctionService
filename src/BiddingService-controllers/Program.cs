@@ -7,6 +7,9 @@ using MongoDB.Entities;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddControllers();
+
 builder.Services.AddMassTransit( x => 
 {
     x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
@@ -33,10 +36,11 @@ builder.Services
         options.TokenValidationParameters.NameClaimType = "username";
     });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
-
-app.UseHttpsRedirection();
+app.MapControllers();
 
 await DB.InitAsync("BidDb", MongoClientSettings
     .FromConnectionString(builder.Configuration.GetConnectionString("BidDbConnection")));
