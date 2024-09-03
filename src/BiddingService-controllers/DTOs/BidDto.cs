@@ -1,5 +1,3 @@
-using System;
-
 namespace BiddingService_controllers.DTOs;
 
 public class BidDto
