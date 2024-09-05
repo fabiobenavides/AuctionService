@@ -1,4 +1,5 @@
 using BiddingService_controllers.Consumers;
+using BiddingService_controllers.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
@@ -37,6 +38,8 @@ builder.Services
     });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//Add the backgroup task
+builder.Services.AddHostedService<CheckAuctionFinished>();
 
 var app = builder.Build();
 
