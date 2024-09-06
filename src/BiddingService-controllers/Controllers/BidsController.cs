@@ -4,9 +4,9 @@ using BiddingService_controllers.Models;
 using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
+using BiddingService_controllers.Services;
 
 namespace BiddingService_controllers.Controllers
 {
@@ -17,11 +17,13 @@ namespace BiddingService_controllers.Controllers
 
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly GrpcAuctionClient _grpcAuctionClient;
 
-        public BidsController(IMapper mapper, IPublishEndpoint publishEndpoint)
+        public BidsController(IMapper mapper, IPublishEndpoint publishEndpoint, GrpcAuctionClient grpcAuctionClient)
         {
             _mapper = mapper;
             _publishEndpoint = publishEndpoint;
+            _grpcAuctionClient = grpcAuctionClient;
         }
 
         [Authorize]
@@ -31,8 +33,8 @@ namespace BiddingService_controllers.Controllers
             var auction = await DB.Find<Auction>().OneAsync(auctionId);
             if (auction == null)
             {
-                // Todo: check with auction service it that has auction
-                return NotFound();
+                auction = _grpcAuctionClient.GetAuction(auctionId);
+                if (auction == null) return BadRequest("Cannot accept bis on this auction at this time");
             }
             if (auction.Seller == User.Identity.Name)
             {

@@ -40,6 +40,9 @@ builder.Services
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Add the backgroup task
 builder.Services.AddHostedService<CheckAuctionFinished>();
+//GRPC
+builder.Services.AddScoped<GrpcAuctionClient>();
+
 
 var app = builder.Build();
 
