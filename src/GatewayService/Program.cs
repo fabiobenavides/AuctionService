@@ -16,7 +16,22 @@ builder.Services
         options.TokenValidationParameters.NameClaimType = "username";
     });
 
+//Adding a Cors policy for browser connections for SignalR
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("customPolicy", policy =>
+    {
+        policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .WithOrigins(builder.Configuration["ClientApp"]);
+    });
+});
+
+
 var app = builder.Build();
+
+app.UseCors();
 
 app.MapReverseProxy();
 

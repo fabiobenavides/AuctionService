@@ -12,6 +12,7 @@ COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.
 COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
 COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
 COPY src/BiddingService-controllers/BiddingService-controllers.csproj src/BiddingService-controllers/BiddingService-controllers.csproj
+COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 
 # Restore package deps
 RUN dotnet restore "DontNetApi.sln"
