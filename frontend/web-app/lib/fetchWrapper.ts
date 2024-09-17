@@ -53,7 +53,14 @@ async function getHeaders() {
 
 async function handleResponse(response: Response) {
     const text = await response.text();
-    const data = text && JSON.parse(text);
+    //const data = text && JSON.parse(text);
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (error) {
+        data = text;
+    }
+
 
     if (response.ok) {
         return data || response.statusText;
@@ -62,7 +69,9 @@ async function handleResponse(response: Response) {
     //Return the error to the client code, for now, this is the way it works
     const error = {
         status: response.status,
-        message: response.statusText
+        message: typeof data == 'string' && data !== '' 
+            ? data
+            : response.statusText
     }
     return {error};
 }
