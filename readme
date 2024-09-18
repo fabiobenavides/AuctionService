@@ -1,7 +1,11 @@
 
-#Rebuild a docker image:
+#(Re)Build a docker image:
 docker build -f .\src\AuctionService\Dockerfile -t auction-svc . 
 
+#(Re)Build all docker images:
+docker compose build 
+
+docker compose down
 docker compose up -d
 
 Front-end:
