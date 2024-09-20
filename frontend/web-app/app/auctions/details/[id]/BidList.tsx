@@ -26,7 +26,9 @@ export default function BidList({user, auction}: Props) {
     const highBid = bids.reduce((prev, current) => 
       prev > current.amount 
         ? prev
-        : current.amount,
+        : current.bidStatus.includes('Accepted') 
+          ? current.amount
+          : prev,
       0
     )
     

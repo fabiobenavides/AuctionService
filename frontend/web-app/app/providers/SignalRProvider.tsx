@@ -48,8 +48,11 @@ export default function SignalRProvider({children, user}: Props) {
             loading: 'Loading',
             success: (auction) => <AuctionFinishedToast auction={auction} finishedAuction={finishedAuction} />,
             error: (err) => 'Auction finished'
-        })
-    })
+            } , { 
+                duration: 10000 
+            }
+        )
+    }, []);
 
     useEffect(() => {
         if (!connection.current) {
@@ -65,14 +68,16 @@ export default function SignalRProvider({children, user}: Props) {
 
         connection.current.on('BidPlaced', handleBidPlaced);
         connection.current.on('AuctionCreated', handleAuctionCreated);
+        connection.current.on('AuctionFinished', handleAuctionFinished);
 
         //Clean up fuction
         return () => {
             connection.current?.off('BidPlaced', handleBidPlaced);
             connection.current?.off('AuctionCreated', handleAuctionCreated);
+            connection.current?.off('AuctionFinished', handleAuctionFinished);
         }
 
-    }, [setCurrentPrice, handleBidPlaced, handleAuctionCreated])
+    }, [setCurrentPrice, handleBidPlaced, handleAuctionCreated, handleAuctionFinished])
 
   return (
     children
