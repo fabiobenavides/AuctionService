@@ -34,7 +34,7 @@ export default function AutionForm({auction}: Props) {
             reset({make, model, color, mileage, year});
         }
         setFocus('make');
-    }, [setFocus])
+    }, [setFocus, auction, reset])
 
     async function onSubmit(data: FieldValues) {
         try {
