@@ -79,8 +79,11 @@ export default function AutionForm({auction}: Props) {
                 <DateInput label='Auction end date/time' 
                     name='auctionEnd' 
                     control={control} 
-                    dateFormat='dd MMMM yyyy h:mm a' 
-                    showTimeSelect rules={{required: 'Auction end date/time is required'}} />
+                    datePickerProps = {{ 
+                        dateFormat: 'dd MMMM yyyy h:mm a',
+                        showTimeSelect: true 
+                     }}
+                    rules={{required: 'Auction end date/time is required'}} />
             </div>
         </>}
 

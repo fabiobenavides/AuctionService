@@ -7,9 +7,11 @@ type Props = {
     label: string
     type?: string
     showLabel?: boolean
-} & UseControllerProps & Partial<DatePickerProps>
+} & UseControllerProps// & Partial<DatePickerProps>
 
-export default function DateInput(props: Props) {
+type DatePickerPropsSubset = Partial<DatePickerProps>;
+
+export default function DateInput(props: Props & { datePickerProps: DatePickerPropsSubset }) {
 
     const { fieldState, field } = useController({...props, defaultValue: ''})
 
@@ -30,12 +32,12 @@ export default function DateInput(props: Props) {
                             : ''
                     }`
                 }
-            />
-            {fieldState.error && (
-                <div className='text-red-500 text-sm'>
-                    {fieldState.error.message}
-                </div>
-            )}
+        />
+        {fieldState.error && (
+            <div className='text-red-500 text-sm'>
+                {fieldState.error.message}
+            </div>
+        )}
     </div>
   )
 }
