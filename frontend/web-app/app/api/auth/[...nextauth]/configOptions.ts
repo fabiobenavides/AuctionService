@@ -11,7 +11,10 @@ export const authOptions: NextAuthOptions = {
             clientId: 'nextApp',
             clientSecret: 'Secret',
             issuer: process.env.ID_URL,
-            authorization: {params: {scope: 'openid profile auctionApp'}},
+            authorization: {
+                params: {scope: 'openid profile auctionApp'},
+                url: process.env.ID_URL + '/connect/authorize'
+            },
             idToken: true
         })
     ],
