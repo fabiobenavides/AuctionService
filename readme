@@ -11,3 +11,11 @@ docker compose up -d
 Front-end:
 cd frontend\web-app
 npm run dev
+
+
+
+-------------
+For the nginx add to the /etc/hosts these entries:
+app.cars.local
+id.cars.local
+api.cars.local
