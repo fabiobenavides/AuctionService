@@ -1,3 +1,8 @@
+networks:
+  custom:
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
 services:
   postgres:
     image: postgres
@@ -7,6 +12,8 @@ services:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      custom:
   mongodb:
     image: mongo
     environment:
@@ -16,11 +23,15 @@ services:
       - 27017:27017
     volumes:
       - mongodata:/var/lib/mongodb/data
+    networks:
+      custom:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     ports:
       - 5672:5672
       - 15672:15672
+    networks:
+      custom:
   auction-svc:
     image: auction-svc:latest
     build:
@@ -43,6 +54,8 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+    networks:
+      custom:
   search-svc:
     image: search-svc:latest
     build:
@@ -59,6 +72,8 @@ services:
     depends_on:
       - rabbitmq
       - mongodb
+    networks:
+      custom:
   identity-svc:
     image: identity-svc:latest
     build:
@@ -71,9 +86,12 @@ services:
       - IssuerUri=http://localhost:5000
       - ClientApp=http://localhost:3000
     ports:
-      - 5000:80
+      - 80:80
     depends_on:
       - postgres
+    networks:
+      custom:
+        ipv4_address: 10.5.0.200
   gateway-svc:
     image: gateway-svc:latest
     build:
@@ -86,6 +104,8 @@ services:
       - 9001:80
     depends_on:
       - postgres
+    networks:
+      custom:
   bid-svc:
     image: bidding-svc:latest
     build:
@@ -103,6 +123,8 @@ services:
     depends_on:
       - rabbitmq
       - mongodb
+    networks:
+      custom:
   notification-svc:
     image: notification-svc:latest
     build:
@@ -116,6 +138,8 @@ services:
       - 7004:80
     depends_on:
       - rabbitmq
+    networks:
+      custom:
   web-app:
     image: web-app:latest
     build:
@@ -125,14 +149,18 @@ services:
       - /var/lib/web/data
     ports:
       - 3000:3000
+    extra_hosts:
+      - "id.cars.local=10.5.0.200"
     environment:
       - NEXTAUTH_SECRET=somethingsecret
       - NEXTAUTH_URL=http://localhost:3000
       - NEXTAUTH_URL_INTERNAL=http://web-app:3000
       - API_URL=http://gateway-svc/
-      - ID_URL=http://host.docker.internal:5000
+      - ID_URL=http://id.cars.local
       - ID_URL_INTERNAL=http://identity-svc
       - NOTIFY_URL=http://localhost:9001/notifications
+    networks:
+      custom:
 volumes:
   pgdata:
   mongodata:
