@@ -11,8 +11,7 @@ docker compose up -d
 Front-end:
 cd frontend\web-app
 npm run dev
-
-
+npm run build
 
 -------------
 For the nginx add to the /etc/hosts these entries:
