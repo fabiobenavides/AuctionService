@@ -155,7 +155,7 @@ services:
       - API_URL=http://gateway-svc/
       - ID_URL=http://id.cars.local
       - ID_URL_INTERNAL=http://identity-svc
-      - NOTIFY_URL=http://localhost:9001/notifications
+      - NOTIFY_URL=http://api.cars.local/notifications
       - VIRTUAL_HOST=app.cars.local
       - VIRTUAL_PORT=3000
     networks:
