@@ -2,9 +2,11 @@ using AuctionService.Controllers;
 using AuctionService.Data;
 using AuctionService.Dtos;
 using AuctionService.RequestHelpers;
+using AuctionService.UnitTests.Utils;
 using AutoFixture;
 using AutoMapper;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -23,12 +25,26 @@ public class AuctionControllerTests
         _fixture = new Fixture();
         _mockRepository = new Mock<IAuctionRepository>();
         _mockPublishEndpoint = new Mock<IPublishEndpoint>();
+
         var mockMapper = new MapperConfiguration(mc =>
         {
             mc.AddMaps(typeof(MappingProfiles).Assembly);
-        }).CreateMapper().ConfigurationProvider;
-        _mapper = new Mapper(mockMapper);
-        _sut = new AuctionController(_mockRepository.Object, _mapper, _mockPublishEndpoint.Object);
+        }).CreateMapper();
+
+        //mockMapper.AssertConfigurationIsValid();
+
+        _mapper = mockMapper;
+
+        _sut = new AuctionController(_mockRepository.Object, _mapper, _mockPublishEndpoint.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = ClaimsPrincipalGetter.GetPrincipal()
+                }
+            }
+        };
 
     }
 
@@ -74,19 +90,7 @@ public class AuctionControllerTests
             .Setup(r => r.SaveChangesAsync())
             .ReturnsAsync(true);
         
-        var auctionDto = new AuctionDto
-        {
-            Id = Guid.NewGuid(),
-            Make = createdAuctionDto.Make,
-            Model = createdAuctionDto.Model,
-            Year = createdAuctionDto.Year,
-            Color = createdAuctionDto.Color,
-            Mileage = createdAuctionDto.Mileage,
-            ImageUrl = createdAuctionDto.ImageUrl,
-            ReservePrice = createdAuctionDto.ReservePrice,
-            AuctionEnd = createdAuctionDto.AuctionEnd,
-            Seller = createdAuctionDto.Seller
-        };
+        var auctionDto = _mapper.Map<AuctionDto>(createdAuctionDto);
             
         _mockRepository
             .Setup(r => r.GetAuctionByDataAsync(auctionDto))
