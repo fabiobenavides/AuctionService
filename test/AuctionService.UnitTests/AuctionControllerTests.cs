@@ -31,8 +31,6 @@ public class AuctionControllerTests
             mc.AddMaps(typeof(MappingProfiles).Assembly);
         }).CreateMapper();
 
-        //mockMapper.AssertConfigurationIsValid();
-
         _mapper = mockMapper;
 
         _sut = new AuctionController(_mockRepository.Object, _mapper, _mockPublishEndpoint.Object)
@@ -93,7 +91,7 @@ public class AuctionControllerTests
         var auctionDto = _mapper.Map<AuctionDto>(createdAuctionDto);
             
         _mockRepository
-            .Setup(r => r.GetAuctionByDataAsync(auctionDto))
+            .Setup(r => r.GetAuctionByDataAsync(It.IsAny<AuctionDto>()))
             .ReturnsAsync(auctionDto);
 
         // Act
