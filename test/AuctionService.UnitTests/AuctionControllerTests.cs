@@ -118,9 +118,8 @@ public class AuctionControllerTests
         
         // Act
         var result = await _sut.CreateAuction(createdAuctionDto);
-        var CreatedResult = result.Result as CreatedAtActionResult;
+
         // Assert
-        Assert.Null(CreatedResult);
         Assert.IsType<BadRequestObjectResult>(result.Result);
     }
 
@@ -150,9 +149,9 @@ public class AuctionControllerTests
             .Returns(Task.FromResult(true));
 
         // Act
-        var result = await _sut.Update(new Guid(), updatedAuctionDto);
+        var result = await _sut.Update(Guid.NewGuid(), updatedAuctionDto);
+
         // Assert
-        Assert.NotNull(result);
         Assert.IsType<OkResult>(result);   
     }
 
@@ -169,7 +168,8 @@ public class AuctionControllerTests
             .ReturnsAsync(auctionDto);
 
         // Act
-        var result = await _sut.Update(new Guid(), updatedAuctionDto);
+        var result = await _sut.Update(Guid.NewGuid(), updatedAuctionDto);
+
         // Assert
         Assert.IsType<ForbidResult>(result);  
     }
@@ -222,8 +222,8 @@ public class AuctionControllerTests
 
         // Act
         var result = await _sut.Delete(auctionDto.Id);
+
         // Assert
-        Assert.NotNull(result);
         Assert.IsType<OkResult>(result);   
     }
 
@@ -238,7 +238,7 @@ public class AuctionControllerTests
             .ReturnsAsync(auctionDto);
 
         // Act
-        var result = await _sut.Delete(new Guid());
+        var result = await _sut.Delete(Guid.NewGuid());
         // Assert
         Assert.IsType<NotFoundResult>(result);  
     }
