@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AuctionService.Controllers;
 using AuctionService.Data;
 using AuctionService.Dtos;
@@ -5,8 +6,10 @@ using AuctionService.RequestHelpers;
 using AuctionService.UnitTests.Utils;
 using AutoFixture;
 using AutoMapper;
+using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -106,42 +109,187 @@ public class AuctionControllerTests
     [Fact]
     public async Task CreateAuction_FailedSave_Returns400BadRequest()
     {
-        throw new NotImplementedException();
+        //Arrange 
+        var createdAuctionDto = _fixture.Create<CreateAuctionDto>();
+
+        _mockRepository
+            .Setup(r => r.SaveChangesAsync())
+            .ReturnsAsync(false);
+        
+        // Act
+        var result = await _sut.CreateAuction(createdAuctionDto);
+        var CreatedResult = result.Result as CreatedAtActionResult;
+        // Assert
+        Assert.Null(CreatedResult);
+        Assert.IsType<BadRequestObjectResult>(result.Result);
     }
 
     [Fact]
     public async Task UpdateAuction_WithUpdateAuctionDto_ReturnsOkResponse()
     {
-        throw new NotImplementedException();
+        //Arrange 
+        var updatedAuctionDto = _fixture.Create<UpdateAuctionDto>();
+               
+        var auctionDto = _fixture.Create<AuctionDto>();
+
+        auctionDto.Seller = ClaimsPrincipalGetter
+            .GetPrincipal()
+            .Claims
+            .FirstOrDefault(c => c.Type == ClaimTypes.Name)
+            .Value;
+            
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        _mockRepository
+            .Setup(r => r.UpdateAsync(It.IsAny<Guid>(), updatedAuctionDto))
+            .ReturnsAsync(true);
+
+        _mockPublishEndpoint.Setup(r => r.Publish(updatedAuctionDto, It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(true));
+
+        // Act
+        var result = await _sut.Update(new Guid(), updatedAuctionDto);
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<OkResult>(result);   
     }
 
     [Fact]
     public async Task UpdateAuction_WithInvalidUser_Returns403Forbid()
     {
-        throw new NotImplementedException();
+        //Arrange 
+        var updatedAuctionDto = _fixture.Create<UpdateAuctionDto>();
+               
+        var auctionDto = _fixture.Create<AuctionDto>();
+            
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        // Act
+        var result = await _sut.Update(new Guid(), updatedAuctionDto);
+        // Assert
+        Assert.IsType<ForbidResult>(result);  
     }
 
     [Fact]
     public async Task UpdateAuction_WithInvalidGuid_ReturnsNotFound()
     {
-        throw new NotImplementedException();
+         //Arrange 
+        var updatedAuctionDto = _fixture.Create<UpdateAuctionDto>();
+               
+        AuctionDto auctionDto = null;
+            
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        // Act
+        var result = await _sut.Update(new Guid(), updatedAuctionDto);
+        // Assert
+        Assert.IsType<NotFoundResult>(result);  
     }
 
     [Fact]
     public async Task DeleteAuction_WithValidUser_ReturnsOkResponse()
     {
-        throw new NotImplementedException();
+        //Arrange 
+        var auctionDto = _fixture.Create<AuctionDto>();
+
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        auctionDto.Seller = ClaimsPrincipalGetter
+            .GetPrincipal()
+            .Claims
+            .FirstOrDefault(c => c.Type == ClaimTypes.Name)
+            .Value;
+        
+        var auctionDeleted = new AuctionDeleted
+        {
+            Id = auctionDto.Id.ToString()
+        };
+
+        _mockPublishEndpoint.Setup(r => r.Publish(auctionDeleted, It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(true));
+
+        _mockRepository
+            .Setup(r => r.SaveChangesAsync())
+            .ReturnsAsync(true);
+
+        // Act
+        var result = await _sut.Delete(auctionDto.Id);
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<OkResult>(result);   
     }
 
     [Fact]
     public async Task DeleteAuction_WithInvalidGuid_Returns404Response()
     {
-        throw new NotImplementedException();
+        //Arrange 
+        AuctionDto auctionDto = null;
+
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        // Act
+        var result = await _sut.Delete(new Guid());
+        // Assert
+        Assert.IsType<NotFoundResult>(result);  
     }
 
     [Fact]
     public async Task DeleteAuction_WithInvalidUser_Returns403Response()
     {
-        throw new NotImplementedException();
+        //Arrange 
+        var auctionDto = _fixture.Create<AuctionDto>();
+
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        // Act
+        var result = await _sut.Delete(auctionDto.Id);
+        // Assert
+        Assert.IsType<ForbidResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteAuction_WithInvalidUser_Returns400BadRequest()
+    {
+        //Arrange 
+        var auctionDto = _fixture.Create<AuctionDto>();
+
+        _mockRepository
+            .Setup(r => r.GetAuctionByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(auctionDto);
+
+        auctionDto.Seller = ClaimsPrincipalGetter
+            .GetPrincipal()
+            .Claims
+            .FirstOrDefault(c => c.Type == ClaimTypes.Name)
+            .Value;
+        
+        var auctionDeleted = new AuctionDeleted
+        {
+            Id = auctionDto.Id.ToString()
+        };
+
+        _mockPublishEndpoint.Setup(r => r.Publish(auctionDeleted, It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(true));
+
+        _mockRepository
+            .Setup(r => r.SaveChangesAsync())
+            .ReturnsAsync(false);
+
+        // Act
+        var result = await _sut.Delete(auctionDto.Id);
+        // Assert
+        Assert.IsType<BadRequestObjectResult>(result);  
     }
 }
