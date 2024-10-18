@@ -60,6 +60,17 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAuctionById_WithInvalidGuid_ShouldReturnBadrequest()
+    {
+        // Arrange ?
+
+        // Act
+        var result = await _httpClient.GetAsync("api/auctions/notAGuid");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
 
     public Task InitializeAsync()
     {
