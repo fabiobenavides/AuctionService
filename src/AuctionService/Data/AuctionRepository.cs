@@ -78,15 +78,13 @@ public class AuctionRepository : IAuctionRepository
         var query = await _context.Auctions
             .FirstOrDefaultAsync(x => x.ReservePrice == auctionDto.ReservePrice
                 && x.Seller == auctionDto.Seller
-                && x.Winner == auctionDto.Winner
-                && x.SoldAmount == auctionDto.SoldAmount
-                && x.CurrentHighBid == auctionDto.CurrentHighBid
                 && x.Item.Make == auctionDto.Make
                 && x.Item.Model == auctionDto.Model
                 && x.Item.Year == auctionDto.Year
                 && x.Item.Color == auctionDto.Color
                 && x.Item.Mileage == auctionDto.Mileage
-                && x.Item.ImageUrl == auctionDto.ImageUrl);
+                && x.Item.ImageUrl == auctionDto.ImageUrl
+                && x.ReservePrice == auctionDto.ReservePrice);
 
         return _mapper.Map<AuctionDto>(query);
     }
