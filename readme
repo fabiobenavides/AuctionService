@@ -18,3 +18,7 @@ For the nginx add to the /etc/hosts these entries:
 app.cars.local
 id.cars.local
 api.cars.local
+
+
+For the Integration tests
+Docker deamon should be running
