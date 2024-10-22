@@ -102,6 +102,52 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
         Assert.Equal("bob", createdAuction.Seller);
     }
 
+    [Fact]
+    public async Task CreateAuction_WithInvalidCreateAuctionDto_ShouldReturn400()
+    {
+        // Arrange ?
+        var auction = GetAuctionDtoForCreate();
+        auction.Make = null;
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser("bob"));
+
+        // Act
+        var result = await _httpClient.PostAsJsonAsync("api/auctions", auction);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAuction_WithValidUpdateDtoAndUser_ShouldReturn200()
+    {
+        // arrange
+        var updateAuctionDto = GetAuctionDtoForUpdate();
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser("Fab"));
+        var auctionGuid = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
+
+        // act
+        var result = await _httpClient.PutAsJsonAsync($"api/auctions/{auctionGuid}", updateAuctionDto);
+
+        // assert
+        result.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAuction_WithValidUpdateDtoAndInvalidUser_ShouldReturn403()
+    {
+        // arrange
+        var updateAuctionDto = GetAuctionDtoForUpdate();
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser("Bob"));
+        var auctionGuid = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
+
+        // act
+        var result = await _httpClient.PutAsJsonAsync($"api/auctions/{auctionGuid}", updateAuctionDto);
+
+        // assert
+        Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+    }
+
     public Task InitializeAsync()
     {
         return Task.CompletedTask;
@@ -126,6 +172,18 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
             Mileage = 10,
             Year = 10,
             ReservePrice = 10
+        };
+    }
+
+    private UpdateAuctionDto GetAuctionDtoForUpdate()
+    {
+        return new UpdateAuctionDto
+        {
+            Make = "Ford Updated",
+            Model = "GT Updated",
+            Color = "White Updated",
+            Mileage = 55,
+            Year = 2024,
         };
     }
 }
