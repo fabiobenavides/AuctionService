@@ -15,6 +15,7 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
     private readonly CustomWebAppFactory _factory;
     private readonly HttpClient _httpClient;
     private const string VEYRON_ID = "c8c3ec17-01bf-49db-82aa-1ef80b833a9f";
+    private const string FORD_ID = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
 
     public AuctionControllerTests(CustomWebAppFactory factory)
     {
@@ -81,7 +82,6 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
         var result = await _httpClient.PostAsJsonAsync("api/auctions", auction);
 
         // Assert
-        //result.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
     }
 
@@ -123,10 +123,9 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
         // arrange
         var updateAuctionDto = GetAuctionDtoForUpdate();
         _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser("Fab"));
-        var auctionGuid = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
 
         // act
-        var result = await _httpClient.PutAsJsonAsync($"api/auctions/{auctionGuid}", updateAuctionDto);
+        var result = await _httpClient.PutAsJsonAsync($"api/auctions/{FORD_ID}", updateAuctionDto);
 
         // assert
         result.EnsureSuccessStatusCode();
@@ -139,10 +138,9 @@ public class AuctionControllerTests : IClassFixture<CustomWebAppFactory>, IAsync
         // arrange
         var updateAuctionDto = GetAuctionDtoForUpdate();
         _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser("Bob"));
-        var auctionGuid = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
 
         // act
-        var result = await _httpClient.PutAsJsonAsync($"api/auctions/{auctionGuid}", updateAuctionDto);
+        var result = await _httpClient.PutAsJsonAsync($"api/auctions/{FORD_ID}", updateAuctionDto);
 
         // assert
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
