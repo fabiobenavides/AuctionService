@@ -13,6 +13,8 @@ COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
 COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
 COPY src/BiddingService-controllers/BiddingService-controllers.csproj src/BiddingService-controllers/BiddingService-controllers.csproj
 COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
+COPY test/AuctionService.IntegrationTests/AuctionService.IntegrationTests.csproj test/AuctionService.IntegrationTests/AuctionService.IntegrationTests.csproj
+COPY test/AuctionService.UnitTests/AuctionService.UnitTests.csproj test/AuctionService.UnitTests/AuctionService.UnitTests.csproj
 
 # Restore package deps
 RUN dotnet restore "DontNetApi.sln"
