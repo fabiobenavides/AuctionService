@@ -22,3 +22,20 @@ api.cars.local
 
 For the Integration tests
 Docker deamon should be running
+
+
+-------------
+Kubernates:
+cd infra\K8S 
+
+kubectl apply -f .\local-pvc.yml 
+kubectl apply -f .\postgres-depl.yml
+
+
+ kubectl get pods
+
+ kubectl get deployments
+
+ kubectl describe pod XYZ
+
+ kubectl get services
