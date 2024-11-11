@@ -31,11 +31,33 @@ cd infra\K8S
 kubectl apply -f .\local-pvc.yml 
 kubectl apply -f .\postgres-depl.yml
 
+kubectl get pods
 
- kubectl get pods
+kubectl get deployments
 
- kubectl get deployments
+kubectl describe pod XYZ
 
- kubectl describe pod XYZ
+kubectl get services
 
- kubectl get services
+kubectl describe nodes
+
+ingress-nginx:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
+
+kubectl get namespaces
+
+kubectl get services --namespace XYZ
+
+
+---
+infra/devcerts
+
+mkcert -key-file server.key -cert-file server.crt app.carties.com api.carsties.com
+
+create a kunernetes secret:
+kubectl create secret tls carsties-app-tls  --key server.key --cert server.crt
+
+kubectl get secrets
+
+---
+kubectl delete -f FILE.yml
