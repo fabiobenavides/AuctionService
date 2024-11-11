@@ -1,4 +1,5 @@
 using Duende.IdentityServer;
+using Duende.IdentityServer.Services;
 using IdentityService.Data;
 using IdentityService.Models;
 using Microsoft.AspNetCore.Identity;
@@ -56,6 +57,17 @@ internal static class HostingExtensions
 
         app.UseStaticFiles();
         app.UseRouting();
+
+        if (app.Environment.IsProduction())
+        {
+                app.Use(async (context, next) => 
+            {
+                var serverUrls = context.RequestServices.GetRequiredService<IServerUrls>();
+                serverUrls.Origin = "https://id.carsties.com";
+                await next();
+            });
+        }
+
         app.UseIdentityServer();
         app.UseAuthorization();
         
