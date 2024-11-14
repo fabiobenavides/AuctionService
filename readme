@@ -48,6 +48,8 @@ kubectl get namespaces
 
 kubectl get services --namespace XYZ
 
+restart a deployment
+kubectl rollout restart deployment NAME
 
 ---
 infra/devcerts
