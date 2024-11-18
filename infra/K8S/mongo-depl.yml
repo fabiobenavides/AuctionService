@@ -15,9 +15,9 @@ spec:
       - name: mongo
         image: mongo
         env:
-          - name: MONTO_INITDB_ROOT_USERNAME
+          - name: MONGO_INITDB_ROOT_USERNAME
             value: root
-          - name: MONTO_INITDB_ROOT_PASSWORD
+          - name: MONGO_INITDB_ROOT_PASSWORD
             value: mongops
         ports:
         - containerPort: 27017

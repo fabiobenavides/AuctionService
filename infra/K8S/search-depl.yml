@@ -15,17 +15,11 @@ spec:
       - name: search-svc
         image: search-svc
         imagePullPolicy: Never
-        env:
-          - name: RabbitMq__Host
-            value: rabbitmq-clusterip
-          - name: RabbitMq__Username
-            value: rabbit
-          - name: RabbitMq__Password
-            value: rabbitps
-          - name: ConnectionStrings__MongoDbConnection
-            value: mongodb://root:mongopw@mongo-clusterip
-          - name: AuctionServiceUrl
-            value: http://auction-clusterip
+        envFrom:
+          - configMapRef:
+              name: search-svc-config
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -37,5 +31,4 @@ spec:
     app: search-svc
   ports:
   - port: 80
-    targetPort: 8080
-
+    targetPort: 80
