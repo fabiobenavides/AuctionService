@@ -8,7 +8,7 @@ data:
   RabbitMq__Username: rabbit
   RabbitMq__Password: rabbitps
   ConnectionStrings__DefaultConnection: Server=postgres-clusterip:5432;User Id=postgres;Password=postgrespw;Database=auctions
-  IdentityServiceUrl: http://identity-svc
+  IdentityServiceUrl: http://identity-clusterip
   Kestrel__Endpoints__Grpc__Protocols: Http2
   Kestrel__Endpoints__Grpc__Url: http://+:7777
   Kestrel__Endpoints__WebApi__Protocols: Http1
@@ -25,3 +25,58 @@ data:
   RabbitMq__Password: rabbitps
   ConnectionStrings__MongoDbConnection: mongodb://root:mongops@mongo-clusterip
   AuctionServiceUrl: http://auction-clusterip
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bid-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  RabbitMq__Host: rabbitmq-clusterip
+  RabbitMq__Username: rabbit
+  RabbitMq__Password: rabbitps
+  ConnectionStrings__BidDbConnection: mongodb://root:mongops@mongo-clusterip
+  IdentityServiceUrl: http://identity-clusterip
+  GrpcAution: http://auction-clusterip:7777
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notify-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  RabbitMq__Host: rabbitmq-clusterip
+  RabbitMq__Username: rabbit
+  RabbitMq__Password: rabbitps
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  ClientApp: http://app.cars.local
+  IdentityServiceUrl: http://identity-clusterip
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-svc-config
+data:
+  ASPNETCORE_URLS: http://+:80
+  ConnectionStrings__DefaultConnection: Server=postgres-clusterip:5432;User Id=postgres;Password=postgrespw;Database=identity
+  IssuerUri: http://id.cars.local
+  ClientApp: http://app.cars.local
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webapp-config
+data:
+  NEXTAUTH_SECRET: somethingsecret
+  NEXTAUTH_URL: http://app.cars.local
+  NEXTAUTH_URL_INTERNAL: http://webapp-clusterip:3000
+  API_URL: http://gateway-clusterip/
+  ID_URL: https://id.cars.local
+  ID_URL_INTERNAL: http://identity-clusterip
+  NOTIFY_URL: http://api.cars.local/notifications

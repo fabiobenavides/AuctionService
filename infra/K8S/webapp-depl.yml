@@ -15,15 +15,9 @@ spec:
       - name: webapp
         image: web-app
         imagePullPolicy: Never
-        env:
-          - name: NEXTAUTH_SECRET
-            value: somethingsecret
-          - name: NEXTAUTH_URL
-            value: https://app.cars.local
-          - name: API_URL
-            value: http://gateway-clusterip/
-          - name: ID_URL
-            value: https://id.cars.local
+        envFrom:
+          - configMapRef:
+              name: webapp-config
         ports:
         - containerPort: 3000
 ---
