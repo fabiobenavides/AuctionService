@@ -15,10 +15,17 @@ npm run build
 
 -------------
 For the nginx add to the /etc/hosts these entries:
+For Dockers:
+
 app.cars.local
 id.cars.local
 api.cars.local
 
+
+For Kubernates:
+app.cars.com
+id.cars.com
+api.cars.com
 
 For the Integration tests
 Docker deamon should be running
@@ -46,7 +53,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 kubectl get namespaces
 
-kubectl get services --namespace XYZ
+kubectl get services -n XYZ
 
 restart a deployment
 kubectl rollout restart deployment NAME

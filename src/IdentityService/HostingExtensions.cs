@@ -63,7 +63,7 @@ internal static class HostingExtensions
                 app.Use(async (context, next) => 
             {
                 var serverUrls = context.RequestServices.GetRequiredService<IServerUrls>();
-                serverUrls.Origin = "https://id.carsties.com";
+                serverUrls.Origin = "https://id.cars.com";
                 await next();
             });
         }
