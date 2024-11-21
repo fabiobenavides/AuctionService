@@ -6,6 +6,12 @@ metadata:
     name: ingress-svc
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - app.cars.com
+      - api.cars.com
+      - id.cars.com
+      secretName: carsties-app-tls
   rules:
   - host: app.cars.com
     http:

@@ -55,7 +55,7 @@ metadata:
   name: gateway-svc-config
 data:
   ASPNETCORE_URLS: http://+:80
-  ClientApp: http://app.cars.com
+  ClientApp: https://app.cars.com
   IdentityServiceUrl: http://identity-clusterip
 ---
 apiVersion: v1
@@ -63,10 +63,10 @@ kind: ConfigMap
 metadata:
   name: identity-svc-config
 data:
-  ASPNETCORE_URLS: http://+:80
+  ASPNETCORE_URLS: http://+:443
   ConnectionStrings__DefaultConnection: Server=postgres-clusterip:5432;User Id=postgres;Password=postgrespw;Database=identity
-  IssuerUri: http://id.cars.com
-  ClientApp: http://app.cars.com
+  IssuerUri: https://id.cars.com
+  ClientApp: https://app.cars.com
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -74,9 +74,9 @@ metadata:
   name: webapp-config
 data:
   NEXTAUTH_SECRET: somethingsecret
-  NEXTAUTH_URL: http://app.cars.com
+  NEXTAUTH_URL: https://app.cars.com
   NEXTAUTH_URL_INTERNAL: http://webapp-clusterip:3000
   API_URL: http://gateway-clusterip/
   ID_URL: https://id.cars.com
   ID_URL_INTERNAL: http://identity-clusterip
-  NOTIFY_URL: http://api.cars.com/notifications
+  NOTIFY_URL: https://api.cars.com/notifications

@@ -68,5 +68,7 @@ kubectl create secret tls carsties-app-tls  --key server.key --cert server.crt
 
 kubectl get secrets
 
+kubectl delete secret carsties-app-tls
+
 ---
 kubectl delete -f FILE.yml
