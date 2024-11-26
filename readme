@@ -48,6 +48,10 @@ kubectl get services
 
 kubectl describe nodes
 
+kubectl describe pod POD-NAME
+
+kubectl lods POD-NAME
+
 ingress-nginx:
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
 
